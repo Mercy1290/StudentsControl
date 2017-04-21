@@ -1,0 +1,175 @@
+﻿@{
+    ViewBag.Title = "Importador Excel";
+}
+
+<h2>Importador Excel</h2>
+<h3 class="hidden">@ViewBag.Maestro</h3>
+<div class="row">
+    <div class="col-md-6">
+        <div id="Paso1" class="row">
+            <h4>Paso 1. Subir Archivo</h4>
+            <div id="fileuploader">
+                <div id="file-uploader"></div>
+                @(Html.DevExtreme().FileUploader()
+        .ID("file-uploader")
+        .Name("myFile")
+        .Multiple(false)
+        .Accept("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel")
+        .UploadMode(FileUploadMode.Instantly)
+        .UploadUrl(Url.Action("Upload", "ImportData"))
+        .LabelText("o Arrastre el archivo aqui")
+        .SelectButtonText("Seleccione el Archivo")
+        .UploadedMessage("Carga Exitosa")
+        .UploadFailedMessage("Error en la Carga")
+        .OnUploaded("fileUploader_onUploaded")
+                )
+            </div>
+        </div>
+        <div id="Paso2" class="row">
+            <h4>Paso 2. Seleccionar Hoja</h4>
+            <div id="cmbHojas" class="dx-selectbox"></div>
+            @(Html.DevExtreme().SelectBox()
+                .ID("cmbHojas")
+                .Name("cmbHojas")
+                .OnValueChanged("cmbHojas_onValueChanged"))
+        </div>
+        <div id="Paso3" class="row">
+            <h4>Paso 3. Definir Rango de Datos</h4>
+            <div class="col-md-3">
+                Fila Inicial
+                @(Html.DevExtreme().TextBox().ID("txtFilaInicial").Name("txtFilaInicial").Value("1"))
+            </div>
+            <div class="col-md-3">
+                Fila Final
+                @(Html.DevExtreme().TextBox().ID("txtFilaFinal").Name("txtFilaFinal").Value("1000"))
+            </div>
+            <div class="col-md-6">
+                <br />
+                @(Html.DevExtreme().Button().ID("btnActualizar").Text("Actualizar").Type(ButtonType.Default).OnClick("btnActualizar_onClick"))
+            </div>
+        </div>
+        <div id="Paso4" class="row">
+            <h4>Paso 4. Mapear Campos y Columnas</h4>
+            <div id="dgColumnas" class="dx-datagrid"></div>
+            @*@(Html.DevExtreme().DataGrid()
+            .ID("dgColumnas")
+            .Columns(c=> {
+                c.Add().DataField("ColDestino");
+                c.Add().DataField("ColOrigen");
+                c.Add().DataField("PrimaryKey").Visible(false);
+                c.Add().DataField("Tipo").Visible(false);
+            }))*@
+            <hr />
+        </div>
+    </div> <!--Fin Mitad Columnas-->
+    <div class="col-md-6">
+        <div id="Paso5" class="row">
+            @(Html.DevExtreme().Button().ID("btnImportar").Text("Importar").Type(ButtonType.Success))
+        </div>
+    </div>
+</div> <!--Fin Fila Principal-->
+@section Scripts{
+<script>
+    // Shorthand for $( document ).ready()
+     $(function () {
+                $("#Paso2").hide();
+                $("#Paso3").hide();
+                $("#Paso4").hide();
+                $("#Paso5").hide();
+            });
+
+    //fileUploader_onUploaded
+    function fileUploader_onUploaded(e) {
+        var nombreArchivo = e.file.name;
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("ObtenerHojas", "ImportData")',
+            data: { nombreArchivo: nombreArchivo },
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: successUpload,
+            error: errorUpload
+        });
+
+        function successUpload(data, status) {
+            $("#Paso2").show();
+            $("#cmbHojas").dxSelectBox("instance").option('items', data);
+        }
+        function errorUpload() {
+            alert('error');
+        }
+    }
+
+    //cmbHojas_onValueChanged
+    function cmbHojas_onValueChanged(e) {
+                var nombreHoja = e.value;
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("ObtenerRango", "ImportData")',
+                    data: { nombreHoja: nombreHoja },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: successFunc,
+                    error: errorFunc
+                });
+
+                function successFunc(data, status) {
+                    $("#txtFilaInicial").dxTextBox('instance').option('value', data.CeldaIni);
+                    $("#txtFilaFinal").dxTextBox('instance').option('value', data.CeldaFin);
+
+                    $("#Paso3").show();
+                }
+
+                function errorFunc() {
+                    alert('error');
+                }
+            }
+
+    //btnActualizar_onClick
+    function btnActualizar_onClick(e) {
+        var filaIni = $("#txtFilaInicial").dxTextBox("instance").option("value");
+        var filaFin = $("#txtFilaFinal").dxTextBox("instance").option("value");
+        var nombreHoja = $("#cmbHojas").dxSelectBox("instance").option("value");
+       
+
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("MapeoCampos", "ImportData")',
+            data: { nombreHoja: nombreHoja, filaIni: filaIni, filaFin: filaFin },
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: successFunc,
+            error: errorFunc
+        });
+
+        function successFunc(data, status) {  
+            //Scripts Grids
+            var dgDataSource = $.parseJSON(data.dgDataSource);
+            var dgLookUp = $.parseJSON(data.dgLookUp);
+
+            $("#dgColumnas").dxDataGrid({
+                dataSource: dgDataSource,
+                columns: [
+                    { dataField: 'ColDestino' },
+                    { dataField: 'PrimaryKey', visible: false },
+                    { dataField: 'Tipo', visible: false },
+                    {
+                        dataField: 'ColOrigen'
+                        , lookup: { dataSource: dgLookUp, valueExpr: 'NombreExcel', displayExpr: 'NombreColumna' }
+                        , allowEditing: true
+                    }
+                ],
+                editing: {
+                    allowUpdating: true, // Enables editing
+                    mode: "cell"
+                }
+            });
+            $("#Paso4").show();
+        }
+
+        function errorFunc() {
+            alert('error');
+        }
+    }
+</script>
+}

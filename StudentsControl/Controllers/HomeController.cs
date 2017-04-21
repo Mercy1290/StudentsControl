@@ -8,11 +8,18 @@ namespace StudentsControl.Controllers
 {
     public class HomeController : Controller
     {
+        //Menu Principal
         public ActionResult Index()
         {
             return View();
         }
 
+        //Menu Principal de Maestros de Datos
+        public ActionResult MasterData()
+        {
+            ViewBag.Message = "Menu Principal de Maestros de Datos";
+            return View();
+        }
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";

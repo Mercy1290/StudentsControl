@@ -1,31 +1,109 @@
 ﻿@{
-    ViewBag.Title = "Home Page";
+    ViewData["Title"] = "Inicio";
 }
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+<div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">
+    <ol class="carousel-indicators">
+        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+        <li data-target="#myCarousel" data-slide-to="1"></li>
+        <li data-target="#myCarousel" data-slide-to="2"></li>
+        <li data-target="#myCarousel" data-slide-to="3"></li>
+    </ol>
+    <div class="carousel-inner" role="listbox">
+        <div class="item active">
+            <img src="~/Content/images/Home1.jpg" alt="Estudiantes" class="img-responsive" />
+            <div class="carousel-caption" role="option">
+                <p>
+                    Centros Educativos
+                </p>
+            </div>
+        </div>
+        <div class="item">
+            <img src="~/Content/images/Home2.jpg" alt="Visual Studio" class="img-responsive" />
+            <div class="carousel-caption" role="option">
+                <p>
+                    El Conocimiento es Poder
+                </p>
+            </div>
+        </div>
+        <div class="item">
+            <img src="~/Content/images/Home3.jpg" alt="Package Management" class="img-responsive" />
+            <div class="carousel-caption" role="option">
+                <p>
+                    Enseñar con Pasión
+                </p>
+            </div>
+        </div>
+        <div class="item">
+            <img src="~/Content/images/Home4.jpg" alt="Microsoft Azure" class="img-responsive" />
+            <div class="carousel-caption" role="option">
+                <p>
+                    Tecnología al Alcance de Todos
+                </p>
+            </div>
+        </div>
+    </div>
+    <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
 </div>
+<br />
+<hr />
 
-<div class="row">
+<h3 class="h3" style="text-align:center">Módulos Principales</h3>
+
+<div class="row row-eq-height">
     <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+        <a href="@Url.Action("MasterData","Home")" class="panel-link">
+            <div class="panel panel-info panel-height hvr-bounce-in" id="pnl_izquierdo">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Maestros de Información</h3>
+                </div>
+                <div class="panel-body" style="text-align:justify">
+                    Módulo creado para el manejo de Master Data, incluyendo datos generales de los cursos, profesores, centros educativos,
+                    asi como de Seguridad de la aplicación, sus Roles y Usuarios.
+                </div>
+            </div>
+        </a>
     </div>
     <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
+        <a href="@Url.Action("Contact","Home")" class="panel-link">
+            <div class="panel panel-info panel-height hvr-bounce-in" id="pnl_centro">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Registro de Horas</h3>
+                </div>
+                <div class="panel-body">
+                    Módulo creado para el ingreso y registro de los distintos cursos impartidos a nivel nacional.
+                </div>
+            </div>
+        </a>
     </div>
     <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+        <a href="@Url.Action("Contact","Home")" class="panel-link">
+            <div class="panel panel-info panel-height hvr-bounce-in" id="pnl_derecha">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Reportes</h3>
+                </div>
+                <div class="panel-body">
+                    Módulo creado para la consulta de horas y cursos impartidos a nivel nacional.
+                </div>
+            </div>
+        </a>
     </div>
 </div>
+@section Scripts{
+    <script>
+    $(document).ready(
+        function () {
+            $(".panel-height").addClass('shake-constant shake-rotate');
+            window.setTimeout(function () {
+                $(".panel-height").removeClass('shake-constant shake-rotate');
+            }, 1500); //<-- Delay in milliseconds
+        });
+    </script>
+}

@@ -22,3 +22,45 @@ select,
 textarea {
     max-width: 280px;
 }
+
+/* ----------------- AGREGADOS POR MI ------------------*/
+/*
+ * Row with equal height columns
+ * --------------------------------------------------
+ */
+.row-eq-height {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+/*Panel que sirve como boton*/
+a.panel-link {
+    text-decoration: none !important;
+    color: inherit;
+}
+
+.panel-height {
+    height: 100%;
+}
+
+.amarillo {
+    background-color: yellow;
+}
+
+/*Import data Excel*/
+.content h4 {
+    margin-bottom: 10px;
+    font-weight: 500;
+    font-size: 18px;
+}
+
+.option {
+    margin-bottom: 10px;
+}
+
+.content {
+    margin-top: 50px;
+    margin-left: 10px;
+}

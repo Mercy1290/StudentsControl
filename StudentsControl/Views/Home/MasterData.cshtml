@@ -1,0 +1,68 @@
+﻿<h2>Maestros de Datos</h2>
+<div class="row">
+    <div class="col-md-8">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">General</h3>
+            </div>
+            <div class="panel-body" style="text-align:justify">
+                <div class="col-md-3 col-sm-6">
+                    <button id="M_Estudiantes" type="button" class="btn btn-default btn-lg text-center" style="width:120px;height:100px;">
+                        <span class="glyphicon glyphicon-user"></span><br>Estudiantes
+                    </button>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <button id="M_CentrosEducativos" type="button" class="btn btn-default btn-lg text-center" style="width:120px;height:100px;">
+                        <span class="glyphicon glyphicon-home"></span><br>Centros<br />Educativos
+                    </button>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <button id="M_Cursos" type="button" class="btn btn-default btn-lg text-center" style="width:120px;height:100px;">
+                        <span class="glyphicon glyphicon-book"></span><br>Centros<br />Cursos
+                    </button>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <button id="M_Profesores" type="button" class="btn btn-default btn-lg text-center" style="width:120px;height:100px;">
+                        <span class="glyphicon glyphicon-briefcase"></span><br>Profesores
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-8">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Seguridad</h3>
+            </div>
+            <div class="panel-body" style="text-align:justify">
+                <div class="col-md-3 col-sm-6">
+                    <button id="M_Usuarios" type="button" class="btn btn-default btn-lg text-center" style="width:120px;height:100px;">
+                        <span class="glyphicon glyphicon-user"></span><br>Centros<br />Usuarios
+                    </button>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <button id="M_Roles" type="button" class="btn btn-default btn-lg text-center" style="width:120px;height:100px;">
+                        <span class="glyphicon glyphicon-lock"></span><br>Roles
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+    $(document).ready(function () {
+        $(".btn").click(function () {
+            var Maestro = $(this).attr('id');
+            var url = '@Url.Action("Accion", "Controlador")';
+            url = url.replace("Accion", Maestro);
+            url = url.replace("Controlador", "MasterData");
+            window.location = url;
+        });
+    });
+    </script>
+
+}

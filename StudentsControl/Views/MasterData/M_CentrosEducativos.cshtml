@@ -1,0 +1,100 @@
+﻿
+@{
+    ViewData["Title"] = "Maestro Centros Educativos";
+}
+
+<h2>Centros Educativos</h2>
+<div class="row">
+    <div class="col-md-2">
+        @(Html.DevExtreme().Button()
+    .ID("gridDeleteSelected")
+    .Text("Delete Selected Records")
+    .Height(34)
+    .Width(195)
+    .Disabled(true)
+    .Visible(false)
+    .OnClick(@<text>
+        function () {
+        var dataGrid = $("#dg").dxDataGrid("instance");
+        $.each(dataGrid.getSelectedRowsData(), function() {
+        dataGrid.getDataSource().store().remove(this.Id);
+        });
+        dataGrid.refresh();
+        }
+    </text>)
+        )
+    </div>
+
+    <div class="col-md-10">
+
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        @(Html.DevExtreme().DataGrid()
+                .ID("dg")
+                .DataSource(d => d.WebApi().Controller("M_CentrosEducativos").Key("Id"))
+                .FilterRow(f => f.Visible(true))
+                .Columns(c =>
+                {
+                    c.Add().DataField("Id").Visible(false);
+                    c.Add().DataField("CodCentro").Caption("Código");
+                    c.Add().DataField("NomCentro").Caption("Centro Educativo");
+                    c.Add().DataField("Direccion").Caption("Dirección");
+                    c.Add().DataField("Ciudad");
+                    c.Add().DataField("Departamento");
+                    c.Add().DataField("Pais").Caption("País");
+                })
+                .ColumnAutoWidth(true)
+                .AllowColumnReordering(true)
+                .AllowColumnResizing(true)
+                .ColumnChooser(c => c.Enabled(true))
+                .RowAlternationEnabled(true)
+                .HeaderFilter(f => f.Visible(true))
+                .Selection(s =>
+                {
+                    s.ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always);
+                    s.SelectAllMode(SelectAllMode.AllPages);
+                    s.Mode(SelectionMode.Multiple);
+                })
+        .Export(e => e.Enabled(true).ExcelFilterEnabled(true).AllowExportSelectedData(true).FileName("Centros Educativos_" + DateTime.Now.ToString("yyyyMMdd")))
+        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+        .Height(600)
+        .ShowBorders(true)
+        .Editing(e => e.AllowAdding(true).AllowDeleting(true).AllowUpdating(true).Mode(GridEditMode.Row).Texts(t => t.ConfirmDeleteMessage("")))
+    .RemoteOperations(true)
+    .OnKeyDown("dg_OnKeyDown")
+    .OnRowRemoved(@<text> function(e){     $("#dg").dxDataGrid("instance").refresh(); }</text>)
+    .OnSelectionChanged(@<text>
+                                                                                                function(data) {
+                                                                                                var deleteButton = $("#gridDeleteSelected").dxButton("instance");
+                                                                                                deleteButton.option("disabled", !data.selectedRowsData.length);
+                                                                                                }
+    </text>)
+        )
+    </div>
+</div>
+
+
+@section  Scripts{
+    <script>
+    function dg_OnKeyDown(e) {
+        //Codigo de Tecla Supr
+        if (e.jQueryEvent.keyCode == 46) {
+            DevExpress.ui.dialog.confirm("¿Desea Eliminar los Registros Seleccionados?", "Confirmar").done(function (dialogResult) {
+                if (dialogResult) {
+                    var dg = $("#dg").dxDataGrid("instance");
+                    $.each(dg.getSelectedRowsData(), function () {
+                        dg.getDataSource().store().remove(this.Id);
+                        $("#dg").dxDataGrid("instance").refresh();
+                    });
+                    $("#dg").dxDataGrid("instance").refresh();
+                    DevExpress.ui.notify("¡Registros Eliminados Satisfactoriamente!", "success", 2000);
+                }
+                else
+                    DevExpress.ui.notify("Operación Cancelada", "error", 2000);
+            });
+        }
+    }
+    </script>
+}
